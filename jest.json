@@ -1,0 +1,32 @@
+{
+  "stats": {
+    "tests": 3,
+    "passes": 3,
+    "failures": 0,
+    "duration": 8007,
+    "start": "2019-08-22T03:00:00.223Z",
+    "end": "2019-08-22T03:00:08.230Z"
+  },
+  "failures": [],
+  "passes": [
+    {
+      "title": "should render without throwing an error",
+      "fullTitle": "Should call route change when no logged user should render without throwing an error",
+      "duration": 2604,
+      "errorCount": 0
+    },
+    {
+      "title": "should render without throwing an error",
+      "fullTitle": "Should render component when logged user should render without throwing an error",
+      "duration": 2604,
+      "errorCount": 0
+    },
+    {
+      "title": "should render without throwing an error",
+      "fullTitle": "Pages should render without throwing an error",
+      "duration": 3605,
+      "errorCount": 0
+    }
+  ],
+  "skipped": []
+}

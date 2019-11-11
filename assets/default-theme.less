@@ -1,0 +1,244 @@
+@import "~antd/dist/antd.less";
+
+/* Mobile Styles */
+@media only screen and (max-width: 400px) {
+}
+/*mobile css starts */
+body {
+}
+
+.divider-login-page {
+    display: none;
+}
+.home-grid {
+    display: flex;
+    flex-direction: column-reverse !important;
+}
+.second-grid {
+    width: 100%;
+}
+.first-grid {
+    width: 100%;
+    margin-top: 2rem;
+    //border: 1px solid greenyellow;
+    height: 50vh;
+    z-index: 1;
+    //background: powderblue !important;
+}
+.main-img-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.main-image {
+    //height: 40vh;
+    -webkit-animation: fadein 6s; /* Safari, Chrome and Opera > 12.1 */
+    -moz-animation: fadein 4s; /* Firefox < 16 */
+    -o-animation: fadein 4s; /* Opera < 12.1 */
+    animation: image-ani 5s ease-in-out; /* name duration timing-function delay iteration-count direction*/
+}
+@keyframes image-ani {
+    0% { top: 100px; }
+    from { opacity: 0; }
+    to { opacity: 1; }
+    100% { top: 0px; }
+}
+/* Firefox < 16 */
+@-moz-keyframes image-ani {
+    0% { top: 100px; }
+    from { opacity: 0; }
+    to { opacity: 1; }
+    100% { top: 0px; }
+}
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes image-ani {
+    0% { top: 100px; }
+    from { opacity: 0; }
+    to { opacity: 1; }
+    100% { top: 0px; }
+}
+/* Internet Explorer */
+@-ms-keyframes image-ani {
+    0% { top: 100px; }
+    from { opacity: 0; }
+    to { opacity: 1; }
+    100% { top: 0px; }
+}
+/* Opera < 12.1 */
+@-o-keyframes image-ani {
+    0% { top: 100px; }
+    from { opacity: 0; }
+    to { opacity: 1; }
+    100% { top: 0px; }
+}
+.form-wrapper {
+    margin: 2rem;
+}
+.logo-header {
+    text-align: -webkit-center;
+}
+.home-menu {
+    font-size: large !important;
+    font-family: sans-serif !important;
+}
+.logo-image {
+    width: 2em;
+    border-radius: 50%;
+}
+.logo-text {
+    padding-left: 0.5rem;
+}
+.view-port-height {
+    min-height: 100vh;
+}
+.main-image {
+    position: relative;
+}
+.main-image > img {
+    width: 100%;
+    height: auto;
+}
+.grid-bg-color {
+    background: white;
+}
+.divider-login-page {
+    text-align: -webkit-center !important;
+}
+.login-divider-image {
+    width: 100%;
+}
+.ui.vertical.divider:after, .ui.vertical.divider:before {
+    height: calc(100% - 0rem);
+}
+
+div.login-form > button, div.login-form > button:hover, div.login-form > button:focus  {
+    background: #59a659;
+}
+.spinner-wrapper {
+    height: 100vh;
+}
+.content-wrapper {
+    opacity: 0;
+}
+.content-wrapper.show {
+    /*-webkit-animation: fadein 3s; !* Safari, Chrome and Opera > 12.1 *!*/
+    /*-moz-animation: fadein 3s; !* Firefox < 16 *!*/
+    /*-o-animation: fadein 3s; !* Opera < 12.1 *!*/
+    animation: content-show 3s normal forwards; /* name duration timing-function delay iteration-count direction*/
+}
+@keyframes content-show {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.logo-text, .log-out {
+    font-family: sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.float-right {
+    float: right;
+}
+li.log-out:hover {
+    text-shadow: 2px 5px 3px midnightblue !important;
+}
+.card-wrapper {
+    margin: 2rem;
+}
+.card-content {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    height: 30rem;
+
+}
+/*override css*/
+.ui.loading.form:before {
+    background: none
+}
+.date-header {
+    font-family: monospace !important;
+    color: midnightblue !important;
+}
+.pusher-wrapper {
+    height: 70vh;
+}
+.voice-command-wrapper {
+    float: right;
+}
+.expense-form-wrapper {
+    width: 56% !important;
+    background: skyblue !important;
+}
+.expense-form {
+    margin: 4rem;
+}
+.card-wrapper .ant-card-head-wrapper {
+   display: block;
+   text-align: center;
+    .ant-card-extra {
+        float: none;
+    }
+}
+.ant-drawer-content-wrapper {
+    width: 100% !important;
+}
+.loading-spinner-center {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+/*mobile css ends*/
+
+/* Tablet Styles */
+@media only screen and (min-width: 401px) and (max-width: 960px) {
+
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 961px) {
+    .main-image {
+        //height: 95vh
+    }
+    .second-grid {
+        width: 50%;
+    }
+    .first-grid {
+        width: 50%;
+        //border: 1px solid greenyellow;
+        height: 80vh;
+        z-index: 1;
+        //background: powderblue !important;
+    }
+    .home-grid {
+        padding: 1rem 3rem;
+        display: flex;
+        flex-direction: row !important;
+    }
+    .form-wrapper {
+        margin-top: 4rem;
+    }
+    .logo-image {
+        width: 3.5em;
+    }
+    .home-menu {
+        font-size: x-large !important;
+        font-family: sans-serif !important;
+    }
+    .content-wrapper {
+        margin: auto 4rem;
+    }
+
+    .card-wrapper .ant-card-head-wrapper {
+        display: flex;
+        text-align: initial;
+        .ant-card-extra {
+            float: right;
+        }
+    }
+    .ant-drawer-content-wrapper {
+        width: 100% !important;
+    }
+}

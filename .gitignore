@@ -1,0 +1,38 @@
+# compiled output
+/.next
+/out
+
+.env
+nodemon.json
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.c9/
+*.launch
+.settings/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+npm-debug.log
+/typings
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+#System Files
+.DS_Store
+Thumbs.db

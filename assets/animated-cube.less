@@ -1,0 +1,129 @@
+.animation-stage {
+    display: flex;
+    width: 93%;
+    height: 4rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+@-webkit-keyframes spinCube {
+    from,to  { -webkit-transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+    16%      { -webkit-transform: rotateY(-90deg);                           }
+    33%      { -webkit-transform: rotateY(-90deg) rotateZ(90deg);            }
+    50%      { -webkit-transform: rotateY(-180deg) rotateZ(90deg);           }
+    66%      { -webkit-transform: rotateY(-270deg) rotateX(90deg);           }
+    83%      { -webkit-transform: rotateX(90deg);                            }
+}
+
+@keyframes spinCube {
+    from,to {
+        -moz-transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+        -ms-transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    }
+    16% {
+        -moz-transform: rotateY(-90deg);
+        -ms-transform: rotateY(-90deg);
+        transform: rotateY(-90deg);
+    }
+    33% {
+        -moz-transform: rotateY(-90deg) rotateZ(90deg);
+        -ms-transform: rotateY(-90deg) rotateZ(90deg);
+        transform: rotateY(-90deg) rotateZ(90deg);
+    }
+    50% {
+        -moz-transform: rotateY(-180deg) rotateZ(90deg);
+        -ms-transform: rotateY(-180deg) rotateZ(90deg);
+        transform: rotateY(-180deg) rotateZ(90deg);
+    }
+    66% {
+        -moz-transform: rotateY(-270deg) rotateX(90deg);
+        -ms-transform: rotateY(-270deg) rotateX(90deg);
+        transform: rotateY(-270deg) rotateX(90deg);
+    }
+    83% {
+        -moz-transform: rotateX(90deg);
+        -ms-transform: rotateX(90deg);
+        transform: rotateX(90deg);
+    }
+}
+
+.cubes-wrapper {
+    -webkit-animation-name: spinCube;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: 12s;
+
+    animation-name: spinCube;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-duration: 12s;
+
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+    -webkit-transform-origin: 30px 30px 0;
+    -moz-transform-origin: 30px 30px 0;
+    -ms-transform-origin: 30px 30px 0;
+    transform-origin: 30px 30px 0;
+}
+
+.cubes-wrapper div {
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    border: 1px solid #ccc;
+    background: rgba(255,255,255,0.8);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+    line-height: 3rem;
+    text-align: center;
+    font-size: 4rem;
+}
+/*translate(): moves an element sideways or up and down.*/
+/*translateZ(30px, 30px) - moves element right 30px and down 30px*/
+/*translateZ(-30px, -30px) - moves element left 30px and up*/
+
+.cubes-wrapper .face1 {
+    -webkit-transform: translateZ(30px);
+    -moz-transform: translateZ(30px);
+    -ms-transform: translateZ(30px);
+    transform: translateZ(30px);
+    backface-visibility: hidden;
+}
+.cubes-wrapper .face2 {
+    -webkit-transform: rotateY(90deg) translateZ(30px);
+    -moz-transform: rotateY(90deg) translateZ(30px);
+    -ms-transform: rotateY(90deg) translateZ(30px);
+    transform: rotateY(90deg) translateZ(30px);
+    backface-visibility: hidden;
+}
+.cubes-wrapper .face3 {
+    -webkit-transform: rotateY(90deg) rotateX(90deg) translateZ(30px);
+    -moz-transform: rotateY(90deg) rotateX(90deg) translateZ(30px);
+    -ms-transform: rotateY(90deg) rotateX(90deg) translateZ(30px);
+    transform: rotateY(90deg) rotateX(90deg) translateZ(30px);
+    backface-visibility: hidden;
+}
+.cubes-wrapper .face4 {
+    -webkit-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    -moz-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    -ms-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    backface-visibility: hidden;
+}
+
+.cubes-wrapper .face5 {
+    -webkit-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    -moz-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    -ms-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    transform: rotateY(-90deg) rotateZ(90deg) translateZ(30px);
+    backface-visibility: hidden;
+}
+
+.cubes-wrapper .face6 {
+    -webkit-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    -moz-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    -ms-transform: rotateY(180deg) rotateZ(90deg) translateZ(30px);
+    transform: rotateX(-90deg) translateZ(30px);
+    backface-visibility: hidden;
+}
