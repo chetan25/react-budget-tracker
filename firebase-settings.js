@@ -1,7 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-import axios from 'axios';
 
 const config = {
     apiKey: process.env.API_KEY,
@@ -80,21 +79,6 @@ export const addExpense = async (data) => {
         return {added: false};
     }
 
-};
-
-export const getData = () => {
-    axios.get('/data')
-        .then(function (response) {
-            // console.log(response);
-            // handle success
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function () {
-            // always executed
-        });
 };
 // window.firebase = firebase; //for testing purposes
 export default firebase;

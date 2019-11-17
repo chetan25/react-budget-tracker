@@ -7,8 +7,7 @@ import 'Assets/default-theme.less';
 import 'Assets/animated-cube.less';
 import {
     auth, createUserWithEmailPassword, signInWithEmail,
-    signInWithGoogle, createUserProfileDocument,
-    getData
+    signInWithGoogle, createUserProfileDocument
 } from 'Root/firebase-settings';
 import LoginComponent from 'Components/loginComponent';
 import dynamic from 'next/dynamic';
@@ -35,10 +34,6 @@ class Index extends Component<IProps, IState> {
         isLoginWithEmail: false,
         registerUserInProgress: false
     };
-
-    componentDidMount(): void {
-        getData();
-    }
 
     loginWithGoogle = () => {
         this.setState({ isLoginWithGoogle: true, isLoginWithEmail: false });
