@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Popover, Icon } from 'antd';
 
 interface IProps {
     onError?: () => void;
@@ -23,6 +23,15 @@ let voices: any;
 //     lang: 'en-GB',
 //     name: 'Google UK English Male'
 // }
+
+const content = (
+    <div>
+        <p>Open - To Open the Add New Expense Modal</p>
+        <p>Close - To close any open Modal</p>
+        <p>Log Out - To Log Out of App</p>
+        <p>Stop - Stop voice activation</p>
+    </div>
+);
 class VoiceCommand extends Component<IProps, IState> {
     state = {
         voiceActive: false
@@ -39,7 +48,6 @@ class VoiceCommand extends Component<IProps, IState> {
             voices = null;
             setTimeout(() => {
                 voices = synthesis.getVoices();
-                console.log(voices);
                 speech.voice = voices[5];
                 speech.volume = 1;
                 speech.rate = 1;
@@ -56,7 +64,6 @@ class VoiceCommand extends Component<IProps, IState> {
                 recognition.stop();
             };
             recognition.onend = () => {
-                console.log('Speech recognition service disconnected');
                 const { voiceActive } = this.state;
                 if (voiceActive) {
                     this.startRecording(false);
@@ -76,9 +83,8 @@ class VoiceCommand extends Component<IProps, IState> {
                 let current = event.resultIndex;
                 // Get a transcript of what was said.
                 let transcript = event.results[current][0].transcript;
-                console.log(transcript, 'transcript', event.results[current][0]);
                 const text = transcript.toLowerCase().trim();
-                if (text == 'exit') {
+                if (text == 'stop') {
                     speech.text = 'Bye User';
                     synthesis.speak(speech);
                     this.stopRecording();
@@ -101,7 +107,6 @@ class VoiceCommand extends Component<IProps, IState> {
     startRecording = (isFirstTime: boolean = false) => {
         const { onStart, userName } = this.props;
         if (isFirstTime) {
-            console.log('in');
             speech.rate = 0.85;
             speech.text = `Welcome ${userName}, I am Jarvis your Personal Voice Assistant.`;
             synthesis.speak(speech);
@@ -134,8 +139,19 @@ class VoiceCommand extends Component<IProps, IState> {
         const { recording } = this.props;
         return (
             <>
-                <Button type="primary" onClick={() => this.startRecording(true)} loading={recording}>Activate Voice</Button>
-                <Button type="primary" onClick={this.stopRecording} disabled={!recording}>Stop Voice</Button>
+                <Popover content={content} title="Available Commands">
+                    <span className='know-more-icon'><Icon type="question-circle" /></span>
+                </Popover>
+                <Button
+                    type="primary"
+                    onClick={() => this.startRecording(true)}
+                    loading={recording}
+                >Activate Voice</Button>
+                <Button
+                    type="primary"
+                    onClick={this.stopRecording}
+                    disabled={!recording}
+                >Stop Voice</Button>
             </>
         );
     }

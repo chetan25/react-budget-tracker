@@ -79,7 +79,6 @@ class Index extends Component<IProps, IState> {
         //sign up
         createUserWithEmailPassword(email, password)
             .then((response: any) => {
-                console.log(response);
                 // const loggedUser = auth.currentUser();
                 auth.currentUser!.updateProfile({
                     displayName: displayName,
@@ -110,7 +109,6 @@ class Index extends Component<IProps, IState> {
         }
         createUserWithEmailPassword(email, password)
             .then((response: any) => {
-                console.log(response);
                 // const loggedUser = auth.currentUser();
                 auth.currentUser!.updateProfile({
                     displayName: displayName,

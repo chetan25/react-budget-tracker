@@ -44,7 +44,9 @@ class WithAuth extends Component<IProps, IState> {
     };
 
     componentWillUnmount = () => {
-        this.unSubscribeAuth!();
+        if(this.state.loggedUser) {
+            this.unSubscribeAuth!();
+        }
     };
 
     renderChild = (): JSX.Element|null => {
@@ -71,7 +73,6 @@ class WithAuth extends Component<IProps, IState> {
 
     render() {
         const { pageReady } = this.state;
-        console.log(pageReady, 'pageReady');
         const contentClass = pageReady ? 'show' : '';
         if (!pageReady) {
             return (

@@ -26,7 +26,7 @@ const RegisterComponent = (props: IProps) => {
         callback();
     };
 
-    const    compareToFirstPassword = (rule: any, value: any, callback: any) => {
+    const compareToFirstPassword = (rule: any, value: any, callback: any) => {
         console.log(rule);
         const { form } = props;
         if (value && value !== form.getFieldValue('password')) {
@@ -44,6 +44,7 @@ const RegisterComponent = (props: IProps) => {
 
     const registerUser = (e: FormEvent) => {
         e.preventDefault();
+        const { form } = props;
         form.validateFields((err: any, values: any) => {
             if(!err) {
                 registerNewUser(values, true);

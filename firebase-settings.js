@@ -33,7 +33,6 @@ export const createUserProfileDocument = async (user, additionalData) => {
 
    // Go and fetch document form that location
     const snapshot = await userRef.get();
-    console.log(snapshot);
     if (!snapshot.exists) {
         const createdAt = new Date();
         const lastLogin = new Date();
@@ -48,7 +47,7 @@ export const createUserProfileDocument = async (user, additionalData) => {
                 lastLogin,
                 ...additionalData,
             });
-        } catch (error) {
+            response  } catch (error) {
             console.log(error);
         }
     }
@@ -69,11 +68,25 @@ export const getUserDocument = async (uid) => {
     }
 };
 
+export const addExpense = async (data) => {
+    try {
+        const exp = await firestore.collection('expenses')
+            .add(data);
+        if (exp) {
+            return {added: true};
+        }
+    } catch {
+        console.log('error');
+        return {added: false};
+    }
+
+};
+
 export const getData = () => {
     axios.get('/data')
         .then(function (response) {
+            // console.log(response);
             // handle success
-            console.log(response);
         })
         .catch(function (error) {
             // handle error

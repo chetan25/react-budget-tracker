@@ -16,7 +16,6 @@ import 'Assets/default-theme.less';
 
 class Home extends Component {
     renderHome = (loggedUser: ILoggedUser) => {
-        console.log(loggedUser);
         const { displayName } = loggedUser;
         if (!displayName) {
             return (
