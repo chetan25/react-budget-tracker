@@ -74,8 +74,8 @@ export const addExpense = async (data) => {
         if (exp) {
             return {added: true};
         }
-    } catch {
-        console.log('error');
+    } catch(error) {
+        console.log('error', error);
         return {added: false};
     }
 

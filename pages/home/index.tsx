@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import dynamic from 'next/dynamic';
 import { ILoggedUser } from 'Components/interface';
+import { userService } from 'Services/userService';
 import { Spin } from 'antd';
 
 const WithAuth = dynamic(
@@ -14,8 +15,26 @@ const HomeComponent = dynamic(
 import 'Assets/default-theme.less';
 // import moment from 'moment';
 
+interface IState {
+    loggedUser: ILoggedUser;
+}
+
 class Home extends Component {
-    renderHome = (loggedUser: ILoggedUser) => {
+    state: IState = {
+        loggedUser: {
+            uid: '',
+            displayName: null,
+            photoURL: null,
+            email: null
+        },
+    };
+
+    componentDidMount = () => {
+        userService.subscribe((loggedUser: ILoggedUser) => { this.setState({loggedUser}) });
+        userService.init();
+    };
+    renderHome = () => {
+        const { loggedUser } = this.state;
         const { displayName } = loggedUser;
         if (!displayName) {
             return (
@@ -31,7 +50,7 @@ class Home extends Component {
 
     render() {
         return (
-            <WithAuth render={(loggedUser) => this.renderHome(loggedUser)}></WithAuth>
+            <WithAuth render={() => this.renderHome()}></WithAuth>
         );
     }
 }

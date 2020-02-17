@@ -10,6 +10,7 @@
         "Root": ["./"],
         "Assets": "./assets",
         "Components": "./components",
+        "Services": "./services",
         "Pages": "./pages",
         "Providers": "./providers",
         "Data": "./data",

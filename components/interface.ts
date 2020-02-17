@@ -4,3 +4,31 @@ export interface ILoggedUser {
     photoURL: string|null;
     email: string|null;
 }
+
+export interface IAddExpense {
+    select: string;
+    amount: string;
+    expDate: any;
+}
+
+export interface IExpenses  {
+    amount: string;
+    category: string;
+    categoryId: number;
+    dateStamp: number;
+    dollarValue: string;
+    expDate: number;
+    expDateFull: string;
+    expMonth: number;
+    expYear: number;
+    userId: string;
+    id: string;
+}
+
+export interface ICategoryData {
+    amount: number;
+    category: string;
+    categoryId: number
+    dollarValue: string;
+    id: number;
+}

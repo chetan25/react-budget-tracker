@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import {
-    Row, Col, Radio,
+    Row, Col, Radio, Alert,
 } from 'antd';
 import 'Assets/default-theme.less';
 import 'Assets/animated-cube.less';
@@ -25,6 +25,7 @@ interface IState {
     isLoginWithEmail: boolean;
     isLoginWithGoogle: boolean;
     registerUserInProgress: boolean;
+    hssError: boolean;
 }
 class Index extends Component<IProps, IState> {
     state = {
@@ -32,7 +33,8 @@ class Index extends Component<IProps, IState> {
         defaultState: 'login',
         isLoginWithGoogle: false,
         isLoginWithEmail: false,
-        registerUserInProgress: false
+        registerUserInProgress: false,
+        hssError: false
     };
 
     loginWithGoogle = () => {
@@ -52,7 +54,7 @@ class Index extends Component<IProps, IState> {
     };
 
     loginWithEmail = (values: { email: string; password: string; displayName: string }): void => {
-        this.setState({ isLoginWithGoogle: false, isLoginWithEmail: true });
+        this.setState({ isLoginWithGoogle: false, isLoginWithEmail: true, hssError: false });
         const { defaultState } = this.state;
         const { email, password, displayName ='' } = values;
         //login
@@ -64,11 +66,10 @@ class Index extends Component<IProps, IState> {
                         pathname: '/home'
                     });
                 })
-                .catch(() => {
-                    // console.log(error);
-                    this.setState({ isLoginWithEmail: false });
+                .catch((error: {code: number; message: string}) => {
+                    console.log(error);
+                    this.setState({ isLoginWithEmail: false, hssError: true });
                 });
-
             return;
         }
         //sign up
@@ -128,8 +129,18 @@ class Index extends Component<IProps, IState> {
         this.setState({ defaultState: e.target.value });
     };
 
+    renderAlert = (message: string): JSX.Element => {
+      return (
+          <Alert
+              message={message}
+              type="error"
+              closable
+          />
+      );
+    };
+
     render() {
-        const { defaultState, isLoginWithEmail, isLoginWithGoogle, registerUserInProgress } = this.state;
+        const { defaultState, isLoginWithEmail, isLoginWithGoogle, registerUserInProgress, hssError } = this.state;
 
         return (
             <Row className='home-grid'>
@@ -174,6 +185,9 @@ class Index extends Component<IProps, IState> {
                                         registerNewUser={this.registerNewUser}
                                         registerUserInProgress={registerUserInProgress}
                                     />
+                            }
+                            {
+                                hssError ? this.renderAlert('Error - Credentials do no match') : null
                             }
                         </div>
                     </div>

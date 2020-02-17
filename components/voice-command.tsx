@@ -3,11 +3,8 @@ import { Button, Popover, Icon } from 'antd';
 
 interface IProps {
     onError?: () => void;
-    onStart?: () => void;
     onResult?: (transcript: string, synthesis: any, speech: any) => void;
-    onStop?: () => void;
     onSpeechEnd?: () => void;
-    recording?: boolean;
     userName?: string;
 }
 
@@ -105,7 +102,7 @@ class VoiceCommand extends Component<IProps, IState> {
     }
 
     startRecording = (isFirstTime: boolean = false) => {
-        const { onStart, userName } = this.props;
+        const { userName } = this.props;
         if (isFirstTime) {
             speech.rate = 0.85;
             speech.text = `Welcome ${userName}, I am Jarvis your Personal Voice Assistant.`;
@@ -118,25 +115,18 @@ class VoiceCommand extends Component<IProps, IState> {
         this.setState({ voiceActive: true }, () => {
             console.log('out');
         });
-        if (typeof onStart == 'function') {
-            onStart();
-        }
     };
 
     stopRecording = () => {
         synthesis.cancel();
         recognition.abort();
         speech.text = '';
-        const { onStop } = this.props;
         this.setState({ voiceActive: false });
         recognition.stop();
-        if (typeof onStop == 'function') {
-            onStop();
-        }
     };
 
     render() {
-        const { recording } = this.props;
+        const {  voiceActive } = this.state;
         return (
             <>
                 <Popover content={content} title="Available Commands">
@@ -145,12 +135,12 @@ class VoiceCommand extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={() => this.startRecording(true)}
-                    loading={recording}
+                    loading={voiceActive}
                 >Activate Voice</Button>
                 <Button
                     type="primary"
                     onClick={this.stopRecording}
-                    disabled={!recording}
+                    disabled={!voiceActive}
                 >Stop Voice</Button>
             </>
         );
