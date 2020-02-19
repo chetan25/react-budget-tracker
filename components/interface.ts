@@ -9,6 +9,7 @@ export interface IAddExpense {
     select: string;
     amount: string;
     expDate: any;
+    notes: string;
 }
 
 export interface IExpenses  {
@@ -23,6 +24,7 @@ export interface IExpenses  {
     expYear: number;
     userId: string;
     id: string;
+    notes?: string;
 }
 
 export interface ICategoryData {

@@ -2,6 +2,7 @@
 
 /* Mobile Styles */
 @media only screen and (max-width: 400px) {
+
 }
 /*mobile css starts */
 body {
@@ -218,7 +219,12 @@ li.log-out:hover {
     text-shadow: 2px 5px 3px midnightblue !important;
 }
 .card-wrapper {
-    margin: 2rem;
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+.ant-card-body, .ant-drawer-body  {
+    padding: 9px !important;
 }
 .card-content {
     width: 100%;
@@ -300,8 +306,6 @@ div.expense-details-title > div:first-child {
 
 /*mobile css ends*/
 
-/*mobile css ends*/
-
 /* Tablet Styles */
 @media only screen and (min-width: 401px) and (max-width: 960px) {
 
@@ -353,5 +357,8 @@ div.expense-details-title > div:first-child {
     }
     .card-content {
         height: 90vh;
+    }
+    .ant-card-body, .ant-drawer-body  {
+        padding: 24px !important;
     }
 }

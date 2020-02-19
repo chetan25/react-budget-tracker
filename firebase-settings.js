@@ -24,7 +24,6 @@ export const signInWithEmail = (email, password) => auth.signInWithEmailAndPassw
 export const createUserWithEmailPassword = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 firebase.auth.Auth.Persistence.SESSION = 'session';
 
-
 export const createUserProfileDocument = async (user, additionalData) => {
    if (!user) { return; }
    //Get a reference for the user  in the db where user profile might be
@@ -46,8 +45,9 @@ export const createUserProfileDocument = async (user, additionalData) => {
                 lastLogin,
                 ...additionalData,
             });
-            response  } catch (error) {
-            console.log(error);
+            // response
+        } catch (error) {
+            // console.log(error);
         }
     }
 
@@ -63,7 +63,7 @@ export const getUserDocument = async (uid) => {
 
         return { uid, ...userDoc.data() };
     } catch {
-       console.log('error');
+       // console.log('error');
     }
 };
 
@@ -75,8 +75,21 @@ export const addExpense = async (data) => {
             return {added: true};
         }
     } catch(error) {
-        console.log('error', error);
+        // console.log('error', error);
         return {added: false};
+    }
+
+};
+
+export const deleteExpense = async (id) => {
+    try {
+        await firestore.collection('expenses')
+            .doc(id)
+            .delete();
+        return {deleted: true};
+    } catch(error) {
+        // console.log('error', error);
+        return {deleted: false};
     }
 
 };

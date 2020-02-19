@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import dynamic from 'next/dynamic';
 import Router from 'next/router';
-import { auth, firestore, addExpense } from 'Root/firebase-settings';
+import { auth, firestore, addExpense, deleteExpense } from 'Root/firebase-settings';
 import { ILoggedUser } from 'Components/interface';
 import TabSection from 'Components/tab-section';
 import AddExpenseForm from 'Components/add-expense-form';
@@ -36,6 +36,7 @@ interface IState {
     showDetailsSection: boolean;
     drawerVisible: boolean;
     selectedDate: any;
+    detailsTableLoader: boolean;
 }
 const dateFormat = 'YYYY/MM/DD';
 const monthPickerFormat = 'MMMM YYYY';
@@ -49,30 +50,6 @@ const tabList: { key: string, tab: string }[] = [
         key: 'weekly',
         tab: 'Weekly View',
     },
-];
-
-const detailsColumns = [
-    {
-        title: 'Date',
-        dataIndex: 'expDateFull',
-        key: 'expDateFull',
-        sorter: (a: any, b: any) => a.dateStamp - b.dateStamp,
-    },
-    {
-        title: 'Category',
-        dataIndex: 'category',
-        key: 'category',
-        sorter: (a: any, b: any) => a.category.localeCompare(b.category),
-        ellipsis: true,
-    },
-    {
-        title: 'Amount',
-        dataIndex: 'dollarValue',
-        sorter: (a: any, b: any) => {
-            return parseInt(a.amount) -  parseInt(b.amount);
-        },
-        key: 'dollarValue'
-    }
 ];
 
 const calculateCategoryData = (categoryDataArray:ICategoryData[], data: any): void => {
@@ -112,8 +89,46 @@ const HomeComponent = (props:IProps): JSX.Element => {
         categorySum: null,
         detailsData: null,
         showDetailsSection: false,
-        selectedDate: currentDate
+        selectedDate: currentDate,
+        detailsTableLoader: false
     };
+
+    const detailsColumns = [
+        {
+            title: 'Date',
+            dataIndex: 'expDateFull',
+            key: 'expDateFull',
+            sorter: (a: any, b: any) => a.dateStamp - b.dateStamp,
+        },
+        {
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'category',
+            sorter: (a: any, b: any) => a.category.localeCompare(b.category),
+            ellipsis: true,
+        },
+        {
+            title: 'Amount',
+            dataIndex: 'dollarValue',
+            sorter: (a: any, b: any) => {
+                return parseInt(a.amount) -  parseInt(b.amount);
+            },
+            key: 'dollarValue'
+        },
+        {
+            title: 'Notes',
+            dataIndex: 'notes',
+            key: 'notes'
+        },
+        {
+            title: 'Action',
+            dataIndex: '',
+            key: 'x',
+            render: (_: string, record: any) => {
+                return <a onClick={() => removeExpense(record.id)}>Delete</a>
+            },
+        },
+    ];
 
     const totalColumns = [
         {
@@ -139,6 +154,30 @@ const HomeComponent = (props:IProps): JSX.Element => {
             }
         }
     ];
+
+    const removeExpense = (id: string) => {
+        dispatch({
+            type: 'set-details-table-loader',
+            payload: {
+                detailsTableLoader: true
+            }
+        });
+        const exp = deleteExpense(id);
+        exp.then((value: {deleted: boolean}|undefined) => {
+            if(value && value.deleted) {
+                const newDetailsData = state.detailsData!.filter((data: any) => {
+                    return data.id !== id;
+                });
+                dispatch({
+                    type: 'set-expenses',
+                    payload: {
+                        detailsData: newDetailsData.length > 0 ? newDetailsData : null,
+                        detailsTableLoader: false
+                    }
+                });
+            }
+        });
+    };
 
     const showDetails = (categoryId: number): void => {
         const { expenses } = state;
@@ -181,8 +220,12 @@ const HomeComponent = (props:IProps): JSX.Element => {
                     ...state,
                     ...action.payload
                 };
-                break;
             case 'set-selected-date':
+                return {
+                    ...state,
+                    ...action.payload
+                };
+            case 'set-details-table-loader':
                 return {
                     ...state,
                     ...action.payload
@@ -317,6 +360,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
             amount: values.amount,
             dollarValue: formatCurrency(parseInt(values.amount)),
             userId: uid,
+            notes: values.notes ? values.notes : '',
             dateStamp: values.expDate.unix(),
             expDateFull: values.expDate.format('YYYY-MM-DD'),
             expMonth: values.expDate.month() + 1,
@@ -356,7 +400,10 @@ const HomeComponent = (props:IProps): JSX.Element => {
     };
 
     const renderMonthlyView = () => {
-        const { categorySum, showDetailsSection, detailsData, selectedDate } = state;
+        const {
+            categorySum, showDetailsSection,
+            detailsData, selectedDate, detailsTableLoader
+        } = state;
         const title = detailsData ? detailsData[0].category : null;
 
         return (
@@ -381,11 +428,17 @@ const HomeComponent = (props:IProps): JSX.Element => {
                             getContainer={false}
                             style={{ position: 'absolute' }}
                         >
-                            <DetailsTable data={detailsData as []} columns={detailsColumns}/>
+                            <Spin spinning={detailsTableLoader}>
+                                <DetailsTable
+                                    dataSource={detailsData as []}
+                                    columns={detailsColumns}
+                                    scroll={{ x: 400 }}
+                                />
+                            </Spin>
                         </Drawer>
                         : null
                 }
-                <DetailsTable data={categorySum as []} columns={totalColumns}/>
+                <DetailsTable dataSource={categorySum as []} columns={totalColumns}/>
             </div>
         );
     };

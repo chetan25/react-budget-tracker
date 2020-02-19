@@ -31,17 +31,19 @@ class AddExpenseForm extends Component<IProps, IState> {
 
     addExpense = () => {
         this.setState({addingExpenseInProgress: true});
-        const { addNewExpense, form } = this.props;
-        const { resetFields } = form;
-        form.validateFields((err: any, values: any) => {
-            if (!err) {
-                addNewExpense(values);
-                resetFields();
-                this.setState({addingExpenseInProgress: false});
-            } else {
-                this.setState({addingExpenseInProgress: false});
-            }
-        });
+        setTimeout(() => {
+            const { addNewExpense, form } = this.props;
+            const { resetFields } = form;
+            form.validateFields((err: any, values: any) => {
+                if (!err) {
+                    addNewExpense(values);
+                    resetFields();
+                    this.setState({addingExpenseInProgress: false});
+                } else {
+                    this.setState({addingExpenseInProgress: false});
+                }
+            });
+        }, 100);
     };
 
     render = () => {
@@ -95,6 +97,11 @@ class AddExpenseForm extends Component<IProps, IState> {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
+                            <Form.Item label="Notes">
+                                {getFieldDecorator('notes')(
+                                    <Input placeholder="Expense Note" style={{ width: '100%' }} />,
+                                )}
+                            </Form.Item>
                         </Col>
                     </Row>
                 </Form>
