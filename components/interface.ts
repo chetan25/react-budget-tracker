@@ -33,4 +33,13 @@ export interface ICategoryData {
     categoryId: number
     dollarValue: string;
     id: number;
+    budget?: string;
+}
+
+export interface ICategoryBudget {
+    amount: string;
+    categoryId: string;
+    categoryLabel: string;
+    dollarValue: string;
+    id: string|null;
 }

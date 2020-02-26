@@ -93,5 +93,6 @@ export const deleteExpense = async (id) => {
     }
 
 };
+
 // window.firebase = firebase; //for testing purposes
 export default firebase;

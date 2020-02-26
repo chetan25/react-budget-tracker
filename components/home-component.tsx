@@ -14,6 +14,7 @@ import { IAddExpense, IExpenses, ICategoryData } from 'Components/interface';
 import { expenseCategories } from 'Services/shared-data';
 import { formatCurrency } from 'Services/helper';
 import DetailsTable from 'Components/details-table';
+import { ICategoryBudget } from 'Components/./interface';
 
 const VoiceCommand = dynamic(
     () => import('Components/voice-command'),
@@ -21,6 +22,7 @@ const VoiceCommand = dynamic(
 );
 import 'Assets/default-theme.less';
 import moment from 'moment';
+import MonthlyBudgetView from 'Components/./monthly-budget-view';
 
 const { MonthPicker } = DatePicker;
 
@@ -43,46 +45,41 @@ const monthPickerFormat = 'MMMM YYYY';
 const currentDate = moment();
 const tabList: { key: string, tab: string }[] = [
     {
-        key: 'monthly',
-        tab: 'Monthly View',
+        key: 'expenditure',
+        tab: 'Monthly Expenditure',
     },
     {
-        key: 'weekly',
-        tab: 'Weekly View',
+        key: 'target',
+        tab: 'Monthly Budget',
     },
 ];
 
-const calculateCategoryData = (categoryDataArray:ICategoryData[], data: any): void => {
+const calculateCategoryData = (categoryDataArray:ICategoryData[], data: any, monthlyBudgetData: ICategoryBudget[]): void => {
     if (categoryDataArray.length > 0) {
         const index = categoryDataArray!.findIndex((x: any): boolean => x.categoryId === data.categoryId);
         if (index >= 0) {
             categoryDataArray![index]['amount'] =
                 categoryDataArray[index]['amount'] + parseInt(data.amount);
             categoryDataArray![index]['dollarValue'] = formatCurrency(categoryDataArray![index]['amount']);
-        } else {
-            categoryDataArray.push({
-                amount: parseInt(data.amount),
-                category: data.category,
-                categoryId: data.categoryId,
-                dollarValue: data.dollarValue,
-                id: data.categoryId
-            });
+
+            return;
         }
-    } else {
-        categoryDataArray.push({
-            amount: parseInt(data.amount),
-            category: data.category,
-            categoryId: data.categoryId,
-            dollarValue: data.dollarValue,
-            id: data.categoryId
-        });
     }
+    const budgetData = monthlyBudgetData.find((x: any): boolean => x.categoryId == data.categoryId);
+    categoryDataArray.push({
+        amount: parseInt(data.amount),
+        category: data.category,
+        categoryId: data.categoryId,
+        dollarValue: data.dollarValue,
+        id: data.categoryId,
+        budget: budgetData!.amount
+    });
 };
 
 const HomeComponent = (props:IProps): JSX.Element => {
     let categoryDataArray:ICategoryData[]  = [];
     const initialState:IState = {
-        currentTab: 'monthly',
+        currentTab: 'expenditure',
         loading: true,
         expenses: null,
         drawerVisible: false,
@@ -135,6 +132,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
             title: 'Category',
             dataIndex: 'category',
             key: 'category',
+            width: '30%',
             sorter: (a: any, b: any) => a.category - b.category,
         },
         {
@@ -142,6 +140,27 @@ const HomeComponent = (props:IProps): JSX.Element => {
             dataIndex: 'dollarValue',
             key: 'dollarValue',
             sorter: (a: any, b: any) => a.amount - b.amount,
+            width: '30%',
+            render: (text: string, record: any) => {
+                return <div className={parseInt(record.budget) - record.amount < 0 ? '': ''}>
+                    {text}
+                    {
+                        parseInt(record.budget) - record.amount >= 0 ?
+                            <span className='budget-icon under-budget'><Icon type="smile" theme="twoTone" twoToneColor='green' /></span> :
+                            <span className='budget-icon budget-exceeded'><Icon type="frown" theme="twoTone" twoToneColor='red'/></span>
+                    }
+                </div>
+            }
+        },
+        {
+            title: 'Budget',
+            dataIndex: 'budget',
+            key: 'budget',
+            render: (text: string) => {
+                return <span>
+                    {formatCurrency(parseInt(text))}
+                </span>
+            }
         },
         {
             title: '',
@@ -239,8 +258,23 @@ const HomeComponent = (props:IProps): JSX.Element => {
     useEffect(() => {
         const { selectedDate }  = state;
         const currentMonth = selectedDate.format('M');
-        const fetchData = (currentMonth: string) => {
+        const currentYear = selectedDate.format('YYYY');
+        const fetchData = async (currentMonth: string) => {
             const { loggedUser: { uid } } = props;
+            const monthlyBudgetData: any = [];
+            const budgetRef = firestore.collection('budget')
+                .where('userId', "==", uid)
+                .where('month', "==", currentMonth)
+                .where('year', "==", currentYear);
+            await budgetRef.onSnapshot((querySnapshot: any) => {
+                if (querySnapshot.docs.length > 0) {
+                    querySnapshot.forEach(function(doc: any) {
+                        const data = doc.data();
+                        monthlyBudgetData.push(data);
+                    });
+                }
+            });
+
             firestore.collection("expenses")
                 .where('userId', "==", uid)
                 .where('expMonth', "==", parseInt(currentMonth))
@@ -249,7 +283,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
                         const data: any = [];
                         categoryDataArray = [];
                         querySnapshot.forEach(function(doc: any) {
-                            calculateCategoryData(categoryDataArray, doc.data());
+                            calculateCategoryData(categoryDataArray, doc.data(), monthlyBudgetData);
                             data.push({ ...doc.data(), id: doc.id});
                         });
                         dispatch({
@@ -281,16 +315,14 @@ const HomeComponent = (props:IProps): JSX.Element => {
                     }
                 });
         };
-        fetchData(currentMonth);
-    }, [state.selectedDate.format(monthPickerFormat)]);
-
-    // const handleClick = (e: any) => {
-    //     console.log('click ', e);
-    // };
+        if (state.currentTab === 'expenditure') {
+            fetchData(currentMonth);
+        }
+    }, [state.selectedDate.format(monthPickerFormat), state.currentTab]);
 
     const onTabChange = (key: string) => {
         dispatch({
-            type: 'set-expenses',
+            type: 'set-current-tab',
             payload: {
                 currentTab: key
             }
@@ -340,10 +372,10 @@ const HomeComponent = (props:IProps): JSX.Element => {
             }
         } else if (transcript == 'log out') {
             handleLogOut();
-        } else if(transcript == 'monthly') {
-            onTabChange('monthly')
-        } else if(transcript == 'weekly') {
-            onTabChange('weekly')
+        } else if(transcript == 'expenditure') {
+            onTabChange('expenditure')
+        } else if(transcript == 'target') {
+            onTabChange('target')
         } else if(transcript == 'submit') {
             // addNewExpense();
         } else {
@@ -399,11 +431,18 @@ const HomeComponent = (props:IProps): JSX.Element => {
         );
     };
 
-    const renderMonthlyView = () => {
+    const renderMonthlyExpenditureView = () => {
         const {
-            categorySum, showDetailsSection,
+            categorySum, showDetailsSection, expenses,
             detailsData, selectedDate, detailsTableLoader
         } = state;
+        if (!expenses) {
+            return (
+                <Empty >
+                    <Button type="primary" onClick={showDrawer}>Create New Expense</Button>
+                </Empty>
+            );
+        }
         const title = detailsData ? detailsData[0].category : null;
 
         return (
@@ -438,31 +477,19 @@ const HomeComponent = (props:IProps): JSX.Element => {
                         </Drawer>
                         : null
                 }
-                <DetailsTable dataSource={categorySum as []} columns={totalColumns}/>
+                <DetailsTable dataSource={categorySum as []} columns={totalColumns} scroll={{ x: 400 }}/>
             </div>
         );
     };
 
-    const renderExpenseView = () => {
-        const { currentTab } = state;
+    const renderMonthlyBudgetView = (): JSX.Element => {
+        const { loggedUser: { uid } } = props;
+        const { selectedDate } = state;
+        const selectedMonth = selectedDate.format('M');
+        const selectedYear = selectedDate.format('YYYY');
 
         return (
-            <>
-                {
-                    currentTab === 'monthly' ? renderMonthlyView() :
-                        <div className='empty-wrapper'>
-                            <div>
-                                <Empty
-                                    description={
-                                        <span>
-                                       The Feature in Under Progress
-                                   </span>
-                                    }
-                                />
-                            </div>
-                        </div>
-                }
-            </>
+            <MonthlyBudgetView userId={uid} selectedMonth={selectedMonth} selectedYear={selectedYear}/>
         );
     };
 
@@ -477,7 +504,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
 
     const renderHome = () => {
         const { loggedUser } = props;
-        const { currentTab, expenses, loading, selectedDate, drawerVisible } = state;
+        const { currentTab, loading, selectedDate, drawerVisible } = state;
         const { displayName, photoURL = '' } = loggedUser;
 
         return (
@@ -524,13 +551,8 @@ const HomeComponent = (props:IProps): JSX.Element => {
                         {
                             loading ?
                                 <div className='center'><Spin/></div>
-                                : expenses ?
-                                <div>
-                                    { renderExpenseView() }
-                                </div>
-                                : <Empty >
-                                    <Button type="primary" onClick={showDrawer}>Create New Expense</Button>
-                                </Empty>
+                                :
+                                currentTab === 'expenditure' ? renderMonthlyExpenditureView() : renderMonthlyBudgetView()
                         }
                         { drawerVisible ? renderDrawer() : null }
                     </TabSection>

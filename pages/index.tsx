@@ -144,8 +144,8 @@ class Index extends Component<IProps, IState> {
 
         return (
             <Row className='home-grid'>
-                <Col span={12} className='first-grid'>
-                    <div>
+                <Col span={24} className='first-grid'>
+                    <>
                         <div className="animation-stage">
                             <div className="cubes-wrapper">
                                 <div className="face1">
@@ -169,7 +169,7 @@ class Index extends Component<IProps, IState> {
                             </div>
                         </div>
                         <div>
-                            <Radio.Group onChange={this.onChange} defaultValue={defaultState}>
+                            <Radio.Group onChange={this.onChange} defaultValue={defaultState} className='radio-login'>
                                 <Radio.Button value='login'>Login</Radio.Button>
                                 <Radio.Button value='register'>Register</Radio.Button>
                             </Radio.Group>
@@ -190,14 +190,7 @@ class Index extends Component<IProps, IState> {
                                 hssError ? this.renderAlert('Error - Credentials do no match') : null
                             }
                         </div>
-                    </div>
-                </Col>
-                <Col span={12} className='second-grid grid-bg-color'>
-                    <div className='main-img-wrapper'>
-                        <div className='main-image'>
-                            <img  src='/static/tracker.png' />
-                        </div>
-                    </div>
+                    </>
                 </Col>
             </Row>
         );
