@@ -16,3 +16,14 @@ export const expenseCategories = {
         label: 'Miscellaneous'
     }
 };
+
+export const tabListData: { key: string, tab: string }[] = [
+    {
+        key: 'expenditure',
+        tab: 'Monthly Expenditure',
+    },
+    {
+        key: 'target',
+        tab: 'Monthly Budget',
+    },
+];

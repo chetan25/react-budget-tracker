@@ -1,30 +1,24 @@
 {
   "stats": {
-    "tests": 3,
-    "passes": 3,
+    "tests": 2,
+    "passes": 2,
     "failures": 0,
-    "duration": 8007,
-    "start": "2019-08-22T03:00:00.223Z",
-    "end": "2019-08-22T03:00:08.230Z"
+    "duration": 18143,
+    "start": "2020-02-26T02:12:33.727Z",
+    "end": "2020-02-26T02:12:51.870Z"
   },
   "failures": [],
   "passes": [
     {
-      "title": "should render without throwing an error",
-      "fullTitle": "Should call route change when no logged user should render without throwing an error",
-      "duration": 2604,
+      "title": "should aggregate data properly when initial data is empty",
+      "fullTitle": "test calculateCategoryData function should aggregate data properly when initial data is empty",
+      "duration": 9439,
       "errorCount": 0
     },
     {
-      "title": "should render without throwing an error",
-      "fullTitle": "Should render component when logged user should render without throwing an error",
-      "duration": 2604,
-      "errorCount": 0
-    },
-    {
-      "title": "should render without throwing an error",
-      "fullTitle": "Pages should render without throwing an error",
-      "duration": 3605,
+      "title": "should aggregate data properly when initial data is there",
+      "fullTitle": "test calculateCategoryData function should aggregate data properly when initial data is there",
+      "duration": 9439,
       "errorCount": 0
     }
   ],

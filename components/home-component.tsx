@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import dynamic from 'next/dynamic';
 import Router from 'next/router';
-import { auth, firestore, addExpense, deleteExpense } from 'Root/firebase-settings';
+import { auth, firestore, addExpense } from 'Root/firebase-settings';
 import { ILoggedUser } from 'Components/interface';
 import TabSection from 'Components/tab-section';
 import AddExpenseForm from 'Components/add-expense-form';
@@ -11,10 +11,10 @@ import {
 } from 'antd';
 import { userService } from 'Services/userService';
 import { IAddExpense, IExpenses, ICategoryData } from 'Components/interface';
-import { expenseCategories } from 'Services/shared-data';
-import { formatCurrency } from 'Services/helper';
-import DetailsTable from 'Components/details-table';
-import { ICategoryBudget } from 'Components/./interface';
+import { expenseCategories, tabListData } from 'Services/shared-data';
+import { formatCurrency, calculateCategoryData } from 'Services/helper';
+import ExpenseTable from 'Components/expense-table';
+import MonthlyDetails from 'Components/./monthly-details';
 
 const VoiceCommand = dynamic(
     () => import('Components/voice-command'),
@@ -22,7 +22,7 @@ const VoiceCommand = dynamic(
 );
 import 'Assets/default-theme.less';
 import moment from 'moment';
-import MonthlyBudgetView from 'Components/./monthly-budget-view';
+import MonthlyBudgetView from 'Components/monthly-budget-view';
 
 const { MonthPicker } = DatePicker;
 
@@ -43,90 +43,63 @@ interface IState {
 const dateFormat = 'YYYY/MM/DD';
 const monthPickerFormat = 'MMMM YYYY';
 const currentDate = moment();
-const tabList: { key: string, tab: string }[] = [
-    {
-        key: 'expenditure',
-        tab: 'Monthly Expenditure',
-    },
-    {
-        key: 'target',
-        tab: 'Monthly Budget',
-    },
-];
+const tabList: { key: string, tab: string }[] = tabListData;
 
-const calculateCategoryData = (categoryDataArray:ICategoryData[], data: any, monthlyBudgetData: ICategoryBudget[]): void => {
-    if (categoryDataArray.length > 0) {
-        const index = categoryDataArray!.findIndex((x: any): boolean => x.categoryId === data.categoryId);
-        if (index >= 0) {
-            categoryDataArray![index]['amount'] =
-                categoryDataArray[index]['amount'] + parseInt(data.amount);
-            categoryDataArray![index]['dollarValue'] = formatCurrency(categoryDataArray![index]['amount']);
-
-            return;
-        }
+const initialState:IState = {
+    currentTab: 'expenditure',
+    loading: true,
+    expenses: null,
+    drawerVisible: false,
+    categorySum: null,
+    detailsData: null,
+    showDetailsSection: false,
+    selectedDate: currentDate,
+    detailsTableLoader: false
+};
+const homeReducer = (state = initialState, action: {type: string; payload: {[key: string]: any}}): IState => {
+    switch(action.type) {
+        case 'set-current-tab':
+            return {
+                ...state,
+                ...action.payload
+            };
+        case 'set-loading':
+            return {
+                ...state,
+                ...action.payload
+            };
+        case 'set-expenses':
+            return {
+                ...state,
+                ...action.payload
+            };
+        case 'set-drawer-state':
+            return {
+                ...state,
+                ...action.payload
+            };
+        case 'set-details-data':
+            return {
+                ...state,
+                ...action.payload
+            };
+        case 'set-selected-date':
+            return {
+                ...state,
+                ...action.payload
+            };
+        case 'set-details-table-loader':
+            return {
+                ...state,
+                ...action.payload
+            };
+        default:
+            return state;
     }
-    const budgetData = monthlyBudgetData.find((x: any): boolean => x.categoryId == data.categoryId);
-    categoryDataArray.push({
-        amount: parseInt(data.amount),
-        category: data.category,
-        categoryId: data.categoryId,
-        dollarValue: data.dollarValue,
-        id: data.categoryId,
-        budget: budgetData!.amount
-    });
 };
 
 const HomeComponent = (props:IProps): JSX.Element => {
     let categoryDataArray:ICategoryData[]  = [];
-    const initialState:IState = {
-        currentTab: 'expenditure',
-        loading: true,
-        expenses: null,
-        drawerVisible: false,
-        categorySum: null,
-        detailsData: null,
-        showDetailsSection: false,
-        selectedDate: currentDate,
-        detailsTableLoader: false
-    };
-
-    const detailsColumns = [
-        {
-            title: 'Date',
-            dataIndex: 'expDateFull',
-            key: 'expDateFull',
-            sorter: (a: any, b: any) => a.dateStamp - b.dateStamp,
-        },
-        {
-            title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
-            sorter: (a: any, b: any) => a.category.localeCompare(b.category),
-            ellipsis: true,
-        },
-        {
-            title: 'Amount',
-            dataIndex: 'dollarValue',
-            sorter: (a: any, b: any) => {
-                return parseInt(a.amount) -  parseInt(b.amount);
-            },
-            key: 'dollarValue'
-        },
-        {
-            title: 'Notes',
-            dataIndex: 'notes',
-            key: 'notes'
-        },
-        {
-            title: 'Action',
-            dataIndex: '',
-            key: 'x',
-            render: (_: string, record: any) => {
-                return <a onClick={() => removeExpense(record.id)}>Delete</a>
-            },
-        },
-    ];
-
     const totalColumns = [
         {
             title: 'Category',
@@ -174,30 +147,6 @@ const HomeComponent = (props:IProps): JSX.Element => {
         }
     ];
 
-    const removeExpense = (id: string) => {
-        dispatch({
-            type: 'set-details-table-loader',
-            payload: {
-                detailsTableLoader: true
-            }
-        });
-        const exp = deleteExpense(id);
-        exp.then((value: {deleted: boolean}|undefined) => {
-            if(value && value.deleted) {
-                const newDetailsData = state.detailsData!.filter((data: any) => {
-                    return data.id !== id;
-                });
-                dispatch({
-                    type: 'set-expenses',
-                    payload: {
-                        detailsData: newDetailsData.length > 0 ? newDetailsData : null,
-                        detailsTableLoader: false
-                    }
-                });
-            }
-        });
-    };
-
     const showDetails = (categoryId: number): void => {
         const { expenses } = state;
         const sectionData = expenses!.filter((data: IExpenses) => {
@@ -212,47 +161,6 @@ const HomeComponent = (props:IProps): JSX.Element => {
         });
     };
 
-    const homeReducer = (state = initialState, action: {type: string; payload: {[key: string]: any}}): IState => {
-        switch(action.type) {
-            case 'set-current-tab':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            case 'set-loading':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            case 'set-expenses':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            case 'set-drawer-state':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            case 'set-details-data':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            case 'set-selected-date':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            case 'set-details-table-loader':
-                return {
-                    ...state,
-                    ...action.payload
-                };
-            default:
-                return state;
-        }
-    };
     const [state, dispatch] = useReducer(homeReducer, initialState);
 
     useEffect(() => {
@@ -434,7 +342,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
     const renderMonthlyExpenditureView = () => {
         const {
             categorySum, showDetailsSection, expenses,
-            detailsData, selectedDate, detailsTableLoader
+            detailsData, selectedDate
         } = state;
         if (!expenses) {
             return (
@@ -443,7 +351,6 @@ const HomeComponent = (props:IProps): JSX.Element => {
                 </Empty>
             );
         }
-        const title = detailsData ? detailsData[0].category : null;
 
         return (
             <div>
@@ -452,32 +359,16 @@ const HomeComponent = (props:IProps): JSX.Element => {
                 </div>
                 {
                     showDetailsSection ?
-                        <Drawer
-                            title={
-                               <div className='expense-details-title'>
-                                   <div>{title} expenses for {selectedDate.format(monthPickerFormat)}</div>
-                                   <div onClick={onClose} className='close-icon'><Icon type="close-circle" theme="twoTone" /></div>
-                               </div>
-                            }
-                            width={720}
+                        <MonthlyDetails
                             onClose={onClose}
-                            placement="right"
-                            closable={false}
-                            visible={showDetailsSection}
-                            getContainer={false}
-                            style={{ position: 'absolute' }}
-                        >
-                            <Spin spinning={detailsTableLoader}>
-                                <DetailsTable
-                                    dataSource={detailsData as []}
-                                    columns={detailsColumns}
-                                    scroll={{ x: 400 }}
-                                />
-                            </Spin>
-                        </Drawer>
+                            selectedDate={selectedDate}
+                            monthPickerFormat={monthPickerFormat}
+                            detailsData={detailsData}
+                            showDetailsSection={showDetailsSection}
+                        />
                         : null
                 }
-                <DetailsTable dataSource={categorySum as []} columns={totalColumns} scroll={{ x: 400 }}/>
+                <ExpenseTable dataSource={categorySum as []} columns={totalColumns} scroll={{ x: 400 }}/>
             </div>
         );
     };

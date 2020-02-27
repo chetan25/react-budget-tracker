@@ -17,12 +17,12 @@ interface IProps {
 }
 
 const formItemLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 8 },
+    labelCol: { span: 8 },
+    wrapperCol: { span: 4 },
 };
 const formTailLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 8, offset: 4 },
+    labelCol: { span: 8 },
+    wrapperCol: { span: 10, offset: 2 },
 };
 
 const MonthlyBudgetView = (props: IProps) => {
@@ -116,7 +116,6 @@ const MonthlyBudgetView = (props: IProps) => {
                                 amount: values[id],
                                 dollarValue: formatCurrency(values[id])
                             });
-                            // batch.update(docRef, "dollarValue", );
                         });
                         batch.commit();
                         setIsSaving(false);
@@ -127,7 +126,7 @@ const MonthlyBudgetView = (props: IProps) => {
     };
 
     return (
-        <div>
+        <div className='budget-wrapper'>
             <Spin spinning={loading}>
                 {
                     categoryBudget.map((data: ICategoryBudget) => {
@@ -144,11 +143,13 @@ const MonthlyBudgetView = (props: IProps) => {
                     })
                 }
                 <Form.Item {...formTailLayout}>
-                    <Button
-                        type='primary'
-                        onClick={saveBudget}
-                        loading={isSaving}
-                    >Save</Button>
+                    <div className='budget-form-button'>
+                        <Button
+                            type='primary'
+                            onClick={saveBudget}
+                            loading={isSaving}
+                        >Save</Button>
+                    </div>
                 </Form.Item>
             </Spin>
         </div>

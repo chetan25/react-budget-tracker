@@ -14,7 +14,7 @@ interface IProps {
         [key: string]: number;
     };
 }
-const DetailsTable  = (props: IProps): JSX.Element => {
+const ExpenseTable  = (props: IProps): JSX.Element => {
     return (
         <Table
             {...props}
@@ -24,4 +24,4 @@ const DetailsTable  = (props: IProps): JSX.Element => {
     );
 };
 
-export default DetailsTable;
+export default ExpenseTable;
