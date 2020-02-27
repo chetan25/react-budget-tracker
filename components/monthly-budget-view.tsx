@@ -17,12 +17,12 @@ interface IProps {
 }
 
 const formItemLayout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 4 },
+    labelCol: { span: 10 },
+    wrapperCol: { span: 8 },
 };
 const formTailLayout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 10, offset: 2 },
+    labelCol: { span: 6 },
+    wrapperCol: { span: 15, offset: 6 },
 };
 
 const MonthlyBudgetView = (props: IProps) => {

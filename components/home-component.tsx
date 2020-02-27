@@ -6,7 +6,7 @@ import { ILoggedUser } from 'Components/interface';
 import TabSection from 'Components/tab-section';
 import AddExpenseForm from 'Components/add-expense-form';
 import {
-    Menu, Icon, Empty, Button, Spin,
+    Icon, Empty, Button, Spin,
     Drawer, DatePicker
 } from 'antd';
 import { userService } from 'Services/userService';
@@ -15,6 +15,7 @@ import { expenseCategories, tabListData } from 'Services/shared-data';
 import { formatCurrency, calculateCategoryData } from 'Services/helper';
 import ExpenseTable from 'Components/expense-table';
 import MonthlyDetails from 'Components/./monthly-details';
+import MenuItems from 'Components/./menu-items';
 
 const VoiceCommand = dynamic(
     () => import('Components/voice-command'),
@@ -264,12 +265,6 @@ const HomeComponent = (props:IProps): JSX.Element => {
             });
     };
 
-    const handleMenuChange = ({ key }: { key: string}) => {
-        if (key === 'logOut') {
-            handleLogOut();
-        }
-    };
-
     const decipherCommand = (transcript: string, synthesis: any, speech: any): void => {
         const { drawerVisible } = state;
         if (transcript == 'open') {
@@ -400,24 +395,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
 
         return (
             <div>
-                <Menu
-                    defaultSelectedKeys={['mail']}
-                    mode="horizontal"
-                    onClick={handleMenuChange}
-                >
-                    <Menu.Item key="mail" className='logo-text'>
-                        {
-                            photoURL ?
-                                <img src={photoURL!} className='logo-image' /> :
-                                <Icon type="user" />
-                        }
-                        <span className='logo-text'>{displayName}</span>
-                    </Menu.Item>
-                    <Menu.Item key="logOut" className='log-out float-right'>
-                        <Icon type="mail" />
-                        Log Out
-                    </Menu.Item>
-                </Menu>
+                <MenuItems displayName={displayName} photoURL={photoURL} handleLogOut={handleLogOut}/>
                 <div className='card-wrapper'>
                     <TabSection
                         title={

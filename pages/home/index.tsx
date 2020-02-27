@@ -32,6 +32,10 @@ class Home extends Component {
     componentDidMount = () => {
         userService.subscribe((loggedUser: ILoggedUser) => { this.setState({loggedUser}) });
         userService.init();
+        history.pushState(null, 'test', location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
     };
     renderHome = () => {
         const { loggedUser } = this.state;
