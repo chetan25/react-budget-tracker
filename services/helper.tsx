@@ -27,6 +27,6 @@ export const calculateCategoryData = (categoryDataArray:ICategoryData[], data: a
         categoryId: data.categoryId,
         dollarValue: data.dollarValue,
         id: data.categoryId,
-        budget: budgetData!.amount
+        budget: budgetData ? budgetData.amount : '0.00'
     });
 };

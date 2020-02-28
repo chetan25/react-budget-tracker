@@ -308,6 +308,7 @@ div.expense-details-title > div:first-child {
 }
 .budget-wrapper {
     margin: 2rem;
+    height: 100vh;
 }
 .under-budget {
     background: #46c646;
@@ -320,11 +321,26 @@ div.expense-details-title > div:first-child {
     text-align: right;
 }
 
-/*mobile css ends*/
+.card-wrapper {
+    .ant-card-contain-tabs {
+        overflow-y: scroll !important;
+        height: 100% !important;
+    }
+}
+    /*mobile css ends*/
 
 /* Tablet Styles */
 @media only screen and (min-width: 401px) and (max-width: 960px) {
-
+    .card-wrapper {
+        .ant-card-contain-tabs {
+            overflow-y: hidden !important;
+            height: 90vh !important;
+        }
+    }
+    .budget-wrapper {
+        margin: 2rem;
+        height: 100%;
+    }
 }
 
 /* Desktop Styles */
@@ -362,6 +378,13 @@ div.expense-details-title > div:first-child {
             float: right;
         }
     }
+
+    .card-wrapper {
+        .ant-card-contain-tabs {
+            overflow-y: hidden !important;
+            height: 90vh !important;
+        }
+    }
     .ant-drawer-content-wrapper {
         width: 100% !important;
     }
@@ -370,5 +393,9 @@ div.expense-details-title > div:first-child {
     }
     .ant-card-body, .ant-drawer-body  {
         padding: 24px !important;
+    }
+    .budget-wrapper {
+        margin: 2rem;
+        height: 100%;
     }
 }

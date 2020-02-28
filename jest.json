@@ -1,26 +1,39 @@
 {
   "stats": {
-    "tests": 2,
-    "passes": 2,
+    "tests": 4,
+    "passes": 3,
     "failures": 0,
-    "duration": 18143,
-    "start": "2020-02-26T02:12:33.727Z",
-    "end": "2020-02-26T02:12:51.870Z"
+    "duration": 11869,
+    "start": "2020-02-28T02:49:47.340Z",
+    "end": "2020-02-28T02:49:59.209Z"
   },
   "failures": [],
   "passes": [
     {
       "title": "should aggregate data properly when initial data is empty",
       "fullTitle": "test calculateCategoryData function should aggregate data properly when initial data is empty",
-      "duration": 9439,
+      "duration": 6245,
       "errorCount": 0
     },
     {
       "title": "should aggregate data properly when initial data is there",
       "fullTitle": "test calculateCategoryData function should aggregate data properly when initial data is there",
-      "duration": 9439,
+      "duration": 6245,
+      "errorCount": 0
+    },
+    {
+      "title": "should aggregate data properly when there is no budget data",
+      "fullTitle": "test calculateCategoryData function should aggregate data properly when there is no budget data",
+      "duration": 6245,
       "errorCount": 0
     }
   ],
-  "skipped": []
+  "skipped": [
+    {
+      "title": "should return formatted currency",
+      "fullTitle": "Test the formatter function should return formatted currency",
+      "duration": 6245,
+      "errorCount": 0
+    }
+  ]
 }
