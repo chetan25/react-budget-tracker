@@ -13,12 +13,9 @@ import LoginComponent from 'Components/loginComponent';
 import dynamic from 'next/dynamic';
 const RegisterComponent = dynamic(
     () => import('Components/registerComponent'),
-    { ssr: false }
+    { ssr: false },
 );
 
-interface IProps {
-    form: any;
-}
 interface IState {
     confirmDirty: boolean;
     defaultState: string
@@ -27,7 +24,7 @@ interface IState {
     registerUserInProgress: boolean;
     errorMessage: string | null;
 }
-const Index = (props: IProps) => {
+const Index = () => {
     const router = useRouter();
     const [state, setState] = useState<IState>({
         confirmDirty: false,
@@ -90,15 +87,16 @@ const Index = (props: IProps) => {
                 }).then(async () => {
                     //create user if not there
                     await createUserProfileDocument(response.user, {displayName: displayName});
-                    Router.push({
-                        pathname: '/home',
-                    });
+                    router.push('/home');
                 }, function() {
                     // An error happened.
                 });
             })
             .catch((error: Record<string, string>) => {
-                this.setState({ isLoginWithEmail: false, errorMessage: error.message });
+                setState((prevState) => ({
+                    ...prevState,
+                    isLoginWithEmail: false, errorMessage: error.message,
+                }));
             });
     };
 

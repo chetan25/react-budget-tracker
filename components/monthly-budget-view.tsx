@@ -1,5 +1,6 @@
+import React from 'react';
 import {
-    Button, Form, Input, Spin
+    Button, Form, Input, Spin,
 } from 'antd';
 import { WrappedFormUtils } from "Root/node_modules/antd/lib/form/Form";
 import { useEffect, useState } from 'react';
@@ -50,7 +51,7 @@ const MonthlyBudgetView = (props: IProps) => {
                                 categoryId: data['categoryId'],
                                 categoryLabel: data['categoryLabel'],
                                 dollarValue: data['dollarValue'],
-                                id: doc.id
+                                id: doc.id,
                             });
                         });
                         setCategoryBudget(categoryBudgetDefault);
@@ -62,7 +63,7 @@ const MonthlyBudgetView = (props: IProps) => {
                                     categoryId: data.id.toString(),
                                     categoryLabel: data.label,
                                     dollarValue: '$0.00',
-                                    id: null
+                                    id: null,
                                }
                             });
                         setCategoryBudget(cateGoryBudgetDefault);
@@ -81,10 +82,11 @@ const MonthlyBudgetView = (props: IProps) => {
             if(!err) {
                 if(firstTimeAdd) {
                     const documents: any[] = [];
-                    for(let key in values) {
+                    for(const key in values) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (values.hasOwnProperty(key)) {
                             const keyLabel = key.split('-');
-                            let data = {
+                            const data = {
                                 amount: values[key] ? values[key] : 0.00,
                                 categoryId: keyLabel[0],
                                 categoryLabel: keyLabel[1],
@@ -110,11 +112,11 @@ const MonthlyBudgetView = (props: IProps) => {
                     setTimeout(() => {
                         const batch = firestore.batch();
                         categoryBudget.forEach((doc) => {
-                            const docRef = firestore.collection('budget').doc(doc.id); //automatically generate unique id
+                            const docRef = firestore.collection('budget').doc(doc.id as string); //automatically generate unique id
                             const id = `${doc.categoryId}-${doc.categoryLabel}`;
                             batch.update(docRef, {
                                 amount: values[id],
-                                dollarValue: formatCurrency(values[id])
+                                dollarValue: formatCurrency(values[id]),
                             });
                         });
                         batch.commit();

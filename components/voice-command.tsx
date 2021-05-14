@@ -3,7 +3,7 @@ import { Button, Popover, Icon } from 'antd';
 
 interface IProps {
     onError?: () => void;
-    onResult?: (transcript: string, synthesis: any, speech: any) => void;
+    onResult?: (transcript: Commands, synthesis: any, speech: any) => void;
     onSpeechEnd?: () => void;
     userName?: string;
 }
@@ -28,7 +28,7 @@ export enum Commands  {
     "stop" = "stop",
     "expense" = "expense",
     "budget" = "budget",
-};
+}
 
 export const commands: Record<Commands, string> = {
     "add new": 'To Open the Add New Expense Modal',

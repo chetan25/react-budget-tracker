@@ -17,7 +17,7 @@ const RegisterComponent = (props: IProps) => {
     const { getFieldDecorator } = form;
     const [confirmDirty, setConfirmDirty] = useState<boolean>(false);
 
-    const validateToNextPassword = (rule: any, value: any, callback: any) => {
+    const validateToNextPassword = (_: any, value: any, callback: any) => {
         const { form } = props;
         if (value && confirmDirty) {
             form.validateFields(['confirm'], { force: true });
@@ -25,7 +25,7 @@ const RegisterComponent = (props: IProps) => {
         callback();
     };
 
-    const compareToFirstPassword = (rule: any, value: any, callback: any) => {
+    const compareToFirstPassword = (_: any, value: any, callback: any) => {
         const { form } = props;
         if (value && value !== form.getFieldValue('password')) {
             callback('Two passwords that you enter is inconsistent!');

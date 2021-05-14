@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Button, Form, Icon,
-    Input, Divider, Alert,
+    Input, Divider,
 } from 'antd';
 import {WrappedFormUtils} from "Root/node_modules/antd/lib/form/Form";
 import {FormEvent} from "Root/node_modules/@types/react";
@@ -29,16 +29,6 @@ const LoginComponent = (props: IProps) => {
             }
         });
     };
-
-    const renderAlert = (message: string): JSX.Element => {
-        return (
-            <Alert
-                message={message}
-                type="error"
-                closable
-            />
-        );
-      };
 
     return (
         <Form className='form-wrapper'>
