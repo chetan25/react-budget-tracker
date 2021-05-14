@@ -274,7 +274,6 @@ const HomeComponent = (props:IProps): JSX.Element => {
     };
 
     const decipherCommand = (transcript: Commands, synthesis: any, speech: any): void => {
-        const { drawerVisible } = state;
         if (transcript == Commands['add new']) {
             showDrawer();
         } else if (transcript == Commands.close) {
