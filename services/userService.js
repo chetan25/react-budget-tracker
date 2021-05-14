@@ -3,8 +3,11 @@ import { auth } from "Root/firebase-settings";
 
 const subject = new Subject();
 let state = null;
-let unSubscribeAuth;
+let unSubscribeAuth; 
 
+/**
+ * Deprecated, used in tandem with with-auth HOC
+ */
 export const userService = {
     subscribe: setState => subject.subscribe(setState),
     init: () => {

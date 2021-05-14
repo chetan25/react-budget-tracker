@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Button, Popover, Icon } from 'antd';
 
 interface IProps {
@@ -21,31 +21,52 @@ let voices: any;
 //     name: 'Google UK English Male'
 // }
 
+export enum Commands  {
+    "add new" = "add new",
+    "close" = "close",
+    "log out" = "log out",
+    "stop" = "stop",
+    "expense" = "expense",
+    "budget" = "budget",
+};
+
+export const commands: Record<Commands, string> = {
+    "add new": 'To Open the Add New Expense Modal',
+    "close": 'To close any open Modal',
+    "log out": "To Log Out of App",
+    "stop": "Stop voice activation",
+    "expense": "Show Monthly Expenses",
+    "budget": "Show Monthly budget",
+}
+
 const content = (
     <div>
-        <p>Open - To Open the Add New Expense Modal</p>
-        <p>Close - To close any open Modal</p>
-        <p>Log Out - To Log Out of App</p>
-        <p>Stop - Stop voice activation</p>
+        {
+            Object.keys(commands).map(key => {
+                return <p key={key}>{`${key.toUpperCase()} --- ${commands[key]}`}</p>
+            })
+        }
     </div>
 );
 class VoiceCommand extends Component<IProps, IState> {
     state = {
-        voiceActive: false
+        voiceActive: false,
     };
 
      componentDidMount(): void {
         const { onResult } = this.props;
         try {
             // @ts-ignore
-            let SpeechRecognition: any =  window.SpeechRecognition || window.webkitSpeechRecognition;
+            const SpeechRecognition: any =  window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             speech = new SpeechSynthesisUtterance();
             synthesis = window.speechSynthesis;
             voices = null;
             setTimeout(() => {
                 voices = synthesis.getVoices();
-                speech.voice = voices[5];
+                const engLinshIndex = voices.findIndex((voice: Record<string, string>) => voice.lang == 'en-US');
+                console.log(engLinshIndex, 'engLinshIndex');
+                speech.voice = voices[engLinshIndex];
                 speech.volume = 1;
                 speech.rate = 1;
                 speech.pitch = 1;
@@ -77,9 +98,9 @@ class VoiceCommand extends Component<IProps, IState> {
                 // event is a SpeechRecognitionEvent object.
                 // It holds all the lines we have captured so far.
                 // We only need the current one.
-                let current = event.resultIndex;
+                const current = event.resultIndex;
                 // Get a transcript of what was said.
-                let transcript = event.results[current][0].transcript;
+                const transcript = event.results[current][0].transcript;
                 const text = transcript.toLowerCase().trim();
                 if (text == 'stop') {
                     speech.text = 'Bye User';
@@ -101,11 +122,11 @@ class VoiceCommand extends Component<IProps, IState> {
         recognition = null;
     }
 
-    startRecording = (isFirstTime: boolean = false) => {
+    startRecording = (isFirstTime = false): void => {
         const { userName } = this.props;
         if (isFirstTime) {
             speech.rate = 0.85;
-            speech.text = `Welcome ${userName}, I am Jarvis your Personal Voice Assistant.`;
+            speech.text = `Welcome ${userName}, I am your Personal Voice Assistant.`;
             synthesis.speak(speech);
             speech.text = '';
             recognition.start();

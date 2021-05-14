@@ -4,6 +4,7 @@
 
 .env
 nodemon.json
+.env.local
 
 # dependencies
 /node_modules

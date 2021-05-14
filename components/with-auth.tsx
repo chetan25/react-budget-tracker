@@ -13,6 +13,9 @@ interface IState {
 }
 const defaultUser:ILoggedUser|null = null;
 
+/**
+ * Deprectated Alternative way to handle Auth
+ */
 class WithAuth extends Component<IProps, IState> {
     state: IState = {
         loggedUser: defaultUser,

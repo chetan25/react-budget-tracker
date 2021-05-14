@@ -18,7 +18,9 @@
       }
     }],
     ["import", {
-      "libraryName": "antd"
+      "libraryName": "antd",
+      "libraryDirectory": "lib"
+      //  "style": true
     }],
     [
       "@babel/plugin-proposal-decorators",

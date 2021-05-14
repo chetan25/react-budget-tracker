@@ -1,3 +1,4 @@
+import React from 'react';
 import {Drawer, Icon, Spin} from "Root/node_modules/antd";
 import ExpenseTable from "Components/expense-table";
 import {IExpenses} from "Components/interface";

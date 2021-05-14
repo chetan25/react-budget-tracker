@@ -1,62 +1,55 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ILoggedUser } from 'Components/interface';
-import { userService } from 'Services/userService';
 import { Spin } from 'antd';
+import { useRouter } from 'next/router';
+import { useAuth } from 'Services/useAuth';
 
-const WithAuth = dynamic(
-    () => import('Components/with-auth'),
-    { ssr: false }
-);
 const HomeComponent = dynamic(
     () => import('Components/home-component'),
-    { ssr: false }
+    { ssr: false },
 );
 import 'Assets/default-theme.less';
-// import moment from 'moment';
 
-interface IState {
-    loggedUser: ILoggedUser;
-}
-
-class Home extends Component {
-    state: IState = {
-        loggedUser: {
-            uid: '',
-            displayName: null,
-            photoURL: null,
-            email: null
-        },
-    };
-
-    componentDidMount = () => {
-        userService.subscribe((loggedUser: ILoggedUser) => { this.setState({loggedUser}) });
-        userService.init();
+const Home = (): JSX.Element => {
+    const { loggedUser, loading } = useAuth();
+    const router = useRouter();
+   
+    useEffect(() => {
         history.pushState(null, 'test', location.href);
         window.onpopstate = function () {
             history.go(1);
         };
-    };
-    renderHome = () => {
-        const { loggedUser } = this.state;
-        const { displayName } = loggedUser;
+    });
+
+    
+  useEffect(() => {
+    // If auth is null and we are no longer loading
+    if (!loggedUser && !loading) {
+    //   redirect to index
+      router.push('/');
+    }
+  }, [loggedUser, loading]);
+
+    const renderHome = () => {
+        const { displayName } = loggedUser || {displayName: null};
         if (!displayName) {
             return (
-                <Spin size="large" />
+                <div className='spinner-wrapper'>
+                    <Spin size="large" />
+                </div>
             );
         }
         return (
             <div>
-                 <HomeComponent loggedUser={loggedUser}/>
+                <HomeComponent loggedUser={loggedUser as ILoggedUser}/>
             </div>
         );
     };
 
-    render() {
-        return (
-            <WithAuth render={() => this.renderHome()}></WithAuth>
-        );
-    }
+    return (
+        <div>{renderHome()}</div>
+    );
 }
 
 export default Home;

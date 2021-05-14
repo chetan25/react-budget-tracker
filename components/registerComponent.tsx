@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
     Button, Form, Icon,
-    Input
+    Input,
 } from 'antd';
 import {WrappedFormUtils} from "Root/node_modules/antd/lib/form/Form";
 import {FormEvent} from "Root/node_modules/@types/react";
@@ -19,7 +19,6 @@ const RegisterComponent = (props: IProps) => {
 
     const validateToNextPassword = (rule: any, value: any, callback: any) => {
         const { form } = props;
-        console.log(rule);
         if (value && confirmDirty) {
             form.validateFields(['confirm'], { force: true });
         }
@@ -27,7 +26,6 @@ const RegisterComponent = (props: IProps) => {
     };
 
     const compareToFirstPassword = (rule: any, value: any, callback: any) => {
-        console.log(rule);
         const { form } = props;
         if (value && value !== form.getFieldValue('password')) {
             callback('Two passwords that you enter is inconsistent!');

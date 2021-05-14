@@ -1,26 +1,29 @@
+/* eslint-disable react/display-name */
 import React, { useEffect, useReducer } from 'react';
 import dynamic from 'next/dynamic';
-import Router from 'next/router';
 import { auth, firestore, addExpense } from 'Root/firebase-settings';
 import { ILoggedUser } from 'Components/interface';
 import TabSection from 'Components/tab-section';
 import AddExpenseForm from 'Components/add-expense-form';
 import {
     Icon, Empty, Button, Spin,
-    Drawer, DatePicker
+    Drawer, DatePicker,
 } from 'antd';
-import { userService } from 'Services/userService';
 import { IAddExpense, IExpenses, ICategoryData } from 'Components/interface';
 import { expenseCategories, tabListData } from 'Services/shared-data';
 import { formatCurrency, calculateCategoryData } from 'Services/helper';
 import ExpenseTable from 'Components/expense-table';
 import MonthlyDetails from 'Components/./monthly-details';
 import MenuItems from 'Components/./menu-items';
+import { useRouter } from 'next/router';
+import { useAuth } from 'Services/useAuth';
+import { Commands } from 'Components/voice-command';
 
 const VoiceCommand = dynamic(
     () => import('Components/voice-command'),
-    { ssr: false }
+    { ssr: false },
 );
+
 import 'Assets/default-theme.less';
 import moment from 'moment';
 import MonthlyBudgetView from 'Components/monthly-budget-view';
@@ -55,7 +58,7 @@ const initialState:IState = {
     detailsData: null,
     showDetailsSection: false,
     selectedDate: currentDate,
-    detailsTableLoader: false
+    detailsTableLoader: false,
 };
 const homeReducer = (state = initialState, action: {type: string; payload: {[key: string]: any}}): IState => {
     switch(action.type) {
@@ -72,7 +75,7 @@ const homeReducer = (state = initialState, action: {type: string; payload: {[key
         case 'set-expenses':
             return {
                 ...state,
-                ...action.payload
+                ...action.payload,
             };
         case 'set-drawer-state':
             return {
@@ -101,6 +104,9 @@ const homeReducer = (state = initialState, action: {type: string; payload: {[key
 
 const HomeComponent = (props:IProps): JSX.Element => {
     let categoryDataArray:ICategoryData[]  = [];
+    const { clearUser } = useAuth();
+    const router = useRouter();
+
     const totalColumns = [
         {
             title: 'Category',
@@ -134,7 +140,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
                 return <span>
                     {formatCurrency(parseInt(text))}
                 </span>
-            }
+            },
         },
         {
             title: '',
@@ -240,7 +246,7 @@ const HomeComponent = (props:IProps): JSX.Element => {
 
     const showDrawer = () => {
         dispatch({
-            type: 'set-expenses',
+            type: 'set-drawer-state',
             payload: {
                 drawerVisible: true
             }
@@ -249,38 +255,37 @@ const HomeComponent = (props:IProps): JSX.Element => {
 
     const onClose = () => {
         dispatch({
-            type: 'set-expenses',
+            type: 'set-drawer-state',
             payload: {
                 drawerVisible: false,
-                showDetailsSection: false
-            }
+                showDetailsSection: false,
+            },
         });
     };
 
     const handleLogOut = () => {
         auth.signOut()
             .then(() => {
-                userService.clearUser();
-                Router.push('/error', '/');
+                if (typeof clearUser === 'function') {
+                    clearUser();
+                }
+                router.push('/');
             });
     };
 
-    const decipherCommand = (transcript: string, synthesis: any, speech: any): void => {
+    const decipherCommand = (transcript: Commands, synthesis: any, speech: any): void => {
         const { drawerVisible } = state;
-        if (transcript == 'open') {
+        console.log(transcript, 'transcript', drawerVisible);
+        if (transcript == Commands['add new']) {
             showDrawer();
-        } else if (transcript == 'close') {
-            if (drawerVisible) {
-                onClose();
-            }
-        } else if (transcript == 'log out') {
+        } else if (transcript == Commands.close) {
+            onClose();
+        } else if (transcript == Commands['log out']) {
             handleLogOut();
-        } else if(transcript == 'expenditure') {
+        } else if(transcript == Commands.expense) {
             onTabChange('expenditure')
-        } else if(transcript == 'target') {
-            onTabChange('target')
-        } else if(transcript == 'submit') {
-            // addNewExpense();
+        } else if(transcript == Commands.budget) {
+           onTabChange('budget')
         } else {
             speech.text = '';
             synthesis.speak(speech);
