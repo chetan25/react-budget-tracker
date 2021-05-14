@@ -73,7 +73,7 @@ export const getUserDocument = async (uid: AuthType['uid']): Promise<Record<stri
     }
 };
 
-export const addExpense = async (data: firebase.firestore.DocumentData): Promise<Record<string, boolean>> => {
+export const addExpense = async (data: firebase.firestore.DocumentData): Promise<Record<'added', boolean>> => {
     try {
         const exp = await firestore.collection('expenses')
             .add(data);
@@ -88,7 +88,7 @@ export const addExpense = async (data: firebase.firestore.DocumentData): Promise
 
 };
 
-export const deleteExpense = async (id: string): Promise<Record<string, boolean>> => {
+export const deleteExpense = async (id: string): Promise<Record<'deleted', boolean>> => {
     try {
         await firestore.collection('expenses')
             .doc(id)

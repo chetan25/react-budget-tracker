@@ -65,7 +65,6 @@ class VoiceCommand extends Component<IProps, IState> {
             setTimeout(() => {
                 voices = synthesis.getVoices();
                 const engLinshIndex = voices.findIndex((voice: Record<string, string>) => voice.lang == 'en-US');
-                console.log(engLinshIndex, 'engLinshIndex');
                 speech.voice = voices[engLinshIndex];
                 speech.volume = 1;
                 speech.rate = 1;

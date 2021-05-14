@@ -275,7 +275,6 @@ const HomeComponent = (props:IProps): JSX.Element => {
 
     const decipherCommand = (transcript: Commands, synthesis: any, speech: any): void => {
         const { drawerVisible } = state;
-        console.log(transcript, 'transcript', drawerVisible);
         if (transcript == Commands['add new']) {
             showDrawer();
         } else if (transcript == Commands.close) {
@@ -305,9 +304,9 @@ const HomeComponent = (props:IProps): JSX.Element => {
             expDateFull: values.expDate.format('YYYY-MM-DD'),
             expMonth: values.expDate.month() + 1,
             expDate: values.expDate.date(),
-            expYear: values.expDate.year()
+            expYear: values.expDate.year(),
         });
-        exp.then((value: {added: boolean}|undefined) => {
+        exp.then((value: {added: boolean}) => {
             if(value && value.added) {
                 onClose();
             }

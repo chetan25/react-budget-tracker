@@ -25,7 +25,7 @@ const MonthlyDetails = (props: IProps) => {
     const removeExpense = (id: string) => {
         setIsLoading(true);
         const exp = deleteExpense(id);
-        exp.then((value: {deleted: boolean}|undefined) => {
+        exp.then((value: {deleted: boolean}) => {
             if(value && value.deleted) {
                 const newDetailsData = details!.filter((data: any) => {
                     return data.id !== id;
