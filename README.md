@@ -5,7 +5,7 @@ Tools: ['NEXT JS', 'React', 'Recoil', 'Typescript', 'Firebase']
 ---
 
 
-# react-budget-tracker
+# react-budget-tracker (https://react-budget-tracker.vercel.app/)
 <p>This is a basic implementation of React + Firebase + Google Speech API. Login and Registration is done through using firebase api and uses firebase credentials to connect.
 The Credentials are stored in a environment file for security purposes and read in the firebase setting service. Home page has some basic integrating with Google speech api, to make a voice control section. The voice control can be started using the button in the header and there are few basic commands build in for now.
 </p>
